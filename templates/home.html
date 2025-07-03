@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card">
+    <h1>Welcome to BarberBook</h1>
+    <p>Your one-stop solution for barber shop management and online appointments.</p>
+
+    {% if not user.is_authenticated %}
+    <div style="margin-top: 1rem;">
+        <a href="{% url 'register' %}" class="btn">Get Started</a>
+        <a href="{% url 'login' %}" class="btn" style="margin-left: 1rem;">Login</a>
+    </div>
+    {% endif %}
+</div>
+
+<h2>Featured Barber Shops</h2>
+<div class="grid">
+    {% for shop in shops %}
+    <div class="card">
+        <h3>{{ shop.name }}</h3>
+        <p><strong>Address:</strong> {{ shop.address }}</p>
+        <p><strong>Phone:</strong> {{ shop.phone }}</p>
+        <p><strong>Hours:</strong> {{ shop.opening_time }} - {{ shop.closing_time }}</p>
+        {% if shop.description %}
+        <p>{{ shop.description|truncatewords:20 }}</p>
+        {% endif %}
+        <a href="{% url 'shop_detail' shop.id %}" class="btn">View Details</a>
+    </div>
+    {% empty %}
+    <p>No barber shops available yet.</p>
+    {% endfor %}
+</div>
+
+<div style="text-align: center; margin-top: 2rem;">
+    <a href="{% url 'shop_list' %}" class="btn">View All Shops</a>
+</div>
+{% endblock %}

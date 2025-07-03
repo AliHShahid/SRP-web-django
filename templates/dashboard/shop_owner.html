@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Shop Appointments{% endblock %}
+
+{% block content %}
+<h1>Appointments for {{ shop.name }}</h1>
+
+{% if appointments %}
+<table>
+    <thead>
+        <tr>
+            <th>Customer</th>
+            <th>Service</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for appointment in appointments %}
+        <tr>
+            <td>
+                {{ appointment.customer.first_name }} {{ appointment.customer.last_name }}
+                <br><small>{{ appointment.customer.email }}</small>
+            </td>
+            <td>
+                {{ appointment.service.name }}
+                <br><small>${{ appointment.service.price }}</small>
+            </td>
+            <td>{{ appointment.appointment_date }}</td>
+            <td>{{ appointment.appointment_time }}</td>
+            <td class="status-{{ appointment.status }}">{{ appointment.get_status_display }}</td>
+            <td>
+                {% if appointment.status == 'pending' %}
+                <form method="post" action="{% url 'update_appointment' appointment.id %}" style="display: inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="status" value="confirmed">
+                    <button type="submit" class="btn btn-success"
+                        style="font-size: 0.8rem; padding: 0.25rem 0.5rem;">Confirm</button>
+                </form>
+                {% endif %}
+
+                {% if appointment.status == 'confirmed' %}
+                <form method="post" action="{% url 'update_appointment' appointment.id %}" style="display: inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="status" value="completed">
+                    <button type="submit" class="btn"
+                        style="font-size: 0.8rem; padding: 0.25rem 0.5rem;">Complete</button>
+                </form>
+                {% endif %}
+
+                {% if appointment.status in 'pending,confirmed' %}
+                <form method="post" action="{% url 'update_appointment' appointment.id %}" style="display: inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="status" value="cancelled">
+                    <button type="submit" class="btn btn-danger"
+                        style="font-size: 0.8rem; padding: 0.25rem 0.5rem;">Cancel</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="card">
+    <p>No appointments yet.</p>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Shop{% endblock %}
+
+{% block content %}
+<h1>Manage Your Shop</h1>
+
+<div class="card">
+    <h2>{% if shop %}Update{% else %}Create{% endif %} Shop Information</h2>
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="shop_form" value="1">
+
+        <div class="form-group">
+            <label>{{ shop_form.name.label_tag }}</label>
+            {{ shop_form.name }}
+        </div>
+
+        <div class="form-group">
+            <label>{{ shop_form.address.label_tag }}</label>
+            {{ shop_form.address }}
+        </div>
+
+        <div class="form-group">
+            <label>{{ shop_form.phone.label_tag }}</label>
+            {{ shop_form.phone }}
+        </div>
+
+        <div class="form-group">
+            <label>{{ shop_form.email.label_tag }}</label>
+            {{ shop_form.email }}
+        </div>
+
+        <div class="form-group">
+            <label>{{ shop_form.description.label_tag }}</label>
+            {{ shop_form.description }}
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label>{{ shop_form.opening_time.label_tag }}</label>
+                {{ shop_form.opening_time }}
+            </div>
+
+            <div class="form-group">
+                <label>{{ shop_form.closing_time.label_tag }}</label>
+                {{ shop_form.closing_time }}
+            </div>
+        </div>
+
+        <button type="submit" class="btn">{% if shop %}Update{% else %}Create{% endif %} Shop</button>
+    </form>
+</div>
+
+{% if shop %}
+<div class="card">
+    <h2>Add New Service</h2>
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="service_form" value="1">
+
+        <div class="form-group">
+            <label>{{ service_form.name.label_tag }}</label>
+            {{ service_form.name }}
+        </div>
+
+        <div class="form-group">
+            <label>{{ service_form.description.label_tag }}</label>
+            {{ service_form.description }}
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label>{{ service_form.price.label_tag }}</label>
+                {{ service_form.price }}
+            </div>
+
+            <div class="form-group">
+                <label>{{ service_form.duration_minutes.label_tag }}</label>
+                {{ service_form.duration_minutes }}
+            </div>
+        </div>
+
+        <button type="submit" class="btn">Add Service</button>
+    </form>
+</div>
+
+<h2>Current Services</h2>
+{% if services %}
+<div class="grid">
+    {% for service in services %}
+    <div class="card">
+        <h3>{{ service.name }}</h3>
+        <p><strong>Price:</strong> ${{ service.price }}</p>
+        <p><strong>Duration:</strong> {{ service.duration_minutes }} minutes</p>
+        {% if service.description %}
+        <p>{{ service.description }}</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="card">
+    <p>No services added yet. Add your first service above!</p>
+</div>
+{% endif %}
+{% endif %}
+{% endblock %}

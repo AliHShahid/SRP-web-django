@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}My Appointments{% endblock %}
+
+{% block content %}
+<h1>My Appointments</h1>
+
+{% if appointments %}
+<table>
+    <thead>
+        <tr>
+            <th>Shop</th>
+            <th>Service</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for appointment in appointments %}
+        <tr>
+            <td>
+                {{ appointment.shop.name }}
+                <br><small>{{ appointment.shop.phone }}</small>
+            </td>
+            <td>{{ appointment.service.name }}</td>
+            <td>{{ appointment.appointment_date }}</td>
+            <td>{{ appointment.appointment_time }}</td>
+            <td>${{ appointment.service.price }}</td>
+            <td class="status-{{ appointment.status }}">{{ appointment.get_status_display }}</td>
+            <td>
+                {% if appointment.status in 'pending,confirmed' %}
+                <a href="{% url 'cancel_appointment' appointment.id %}" class="btn btn-danger"
+                    style="font-size: 0.8rem; padding: 0.25rem 0.5rem;"
+                    onclick="return confirm('Are you sure you want to cancel this appointment?')">Cancel</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="card">
+    <p>No appointments yet. <a href="{% url 'shop_list' %}">Browse shops</a> to book your first appointment!</p>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ shop.name }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>{{ shop.name }}</h1>
+    <p><strong>Address:</strong> {{ shop.address }}</p>
+    <p><strong>Phone:</strong> {{ shop.phone }}</p>
+    <p><strong>Email:</strong> {{ shop.email }}</p>
+    <p><strong>Hours:</strong> {{ shop.opening_time }} - {{ shop.closing_time }}</p>
+    {% if shop.description %}
+    <p><strong>About:</strong> {{ shop.description }}</p>
+    {% endif %}
+</div>
+
+<h2>Services & Pricing</h2>
+<div class="grid">
+    {% for service in services %}
+    <div class="card">
+        <h3>{{ service.name }}</h3>
+        <p><strong>Price:</strong> ${{ service.price }}</p>
+        <p><strong>Duration:</strong> {{ service.duration_minutes }} minutes</p>
+        {% if service.description %}
+        <p>{{ service.description }}</p>
+        {% endif %}
+        {% if user.is_authenticated and user.userprofile.user_type == 'customer' %}
+        <a href="{% url 'book_appointment' shop.id service.id %}" class="btn">Book This Service</a>
+        {% elif not user.is_authenticated %}
+        <p><a href="{% url 'login' %}">Login</a> to book this service</p>
+        {% endif %}
+    </div>
+    {% empty %}
+    <div class="card">
+        <p>No services available yet.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

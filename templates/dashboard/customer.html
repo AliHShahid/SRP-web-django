@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Customer Dashboard{% endblock %}
+
+{% block content %}
+<h1>Welcome, {{ user.first_name }}!</h1>
+
+<div class="grid">
+    <div class="card">
+        <h3>Quick Actions</h3>
+        <a href="{% url 'shop_list' %}" class="btn">Browse Shops</a>
+        <a href="{% url 'my_appointments' %}" class="btn" style="margin-left: 1rem;">My Appointments</a>
+    </div>
+</div>
+
+<h2>Recent Appointments</h2>
+{% if recent_appointments %}
+<table>
+    <thead>
+        <tr>
+            <th>Shop</th>
+            <th>Service</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for appointment in recent_appointments %}
+        <tr>
+            <td>{{ appointment.shop.name }}</td>
+            <td>{{ appointment.service.name }}</td>
+            <td>{{ appointment.appointment_date }}</td>
+            <td>{{ appointment.appointment_time }}</td>
+            <td class="status-{{ appointment.status }}">{{ appointment.get_status_display }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="card">
+    <p>No appointments yet. <a href="{% url 'shop_list' %}">Browse shops</a> to book your first appointment!</p>
+</div>
+{% endif %}
+{% endblock %} 
